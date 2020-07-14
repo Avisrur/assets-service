@@ -18,6 +18,9 @@ app.get("/", function (req, res) {
 
 app.set("db", db);
 
+app.use("/assets", require("./controllers/assets-controller"));
+app.use("/auth", require("./controllers/auth-controller"));
+
 app.listen(port, (error) => {
   if (error) throw error;
   console.log("Server running on port " + port);
