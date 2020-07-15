@@ -6,7 +6,7 @@ router.post("/signin", signin);
 
 module.exports = router;
 
-const signin = async (req, res, next) => {
+async function signin(req, res, next) {
   const { biToolType, username, password } = req.body;
   try {
     const { token, site } = await getBiTool(biToolType).signin(username, password);
@@ -14,6 +14,6 @@ const signin = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-};
+}
 
 const getBiTool = (type) => new BiToolFactory().getBiToolByType(type);
