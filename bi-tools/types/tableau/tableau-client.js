@@ -1,4 +1,4 @@
-const request = require("request");
+const axios = require("axios");
 const XmlRequestBuilder = require("./xml-request-builder");
 const { signinUrl, workbooksOnSiteUrl, viewsOnWorkbooksUrl, viewDataUrl } = require("../../../config/tableau-config");
 
@@ -9,8 +9,8 @@ class TableauClient {
 
   async signin(username, password) {
     try {
-      const response = await request.post(signinUrl, buildSignInRequest(username, password), buildHeader());
-      return response.credentials;
+      const response = await axios.post(signinUrl, this.buildSignInRequest(username, password), this.buildHeader());
+      return response.data.credentials;
     } catch (error) {
       throw Error(error);
     }
@@ -18,8 +18,8 @@ class TableauClient {
 
   async getWorkbooks(token, siteId) {
     try {
-      const response = await request.get(buildWorkbookOnSiteUrl(siteId), this.buildHeader(token));
-      return response;
+      const response = await axios.get(this.buildWorkbookOnSiteUrl(siteId), this.buildHeader(token));
+      return response.data.workbooks.workbook;
     } catch (error) {
       throw Error(error);
     }
@@ -27,8 +27,8 @@ class TableauClient {
 
   async getAllViewsOfWorkbook(workbookId, token, siteId) {
     try {
-      const response = await request.get(buildViewsOnWorkbookUrl(workbookId, siteId), this.buildHeader(token));
-      return response;
+      const response = await axios.get(this.buildViewsOnWorkbookUrl(workbookId, siteId), this.buildHeader(token));
+      return response.data.workbook.views.view;
     } catch (error) {
       throw Error(error);
     }
@@ -36,7 +36,7 @@ class TableauClient {
 
   async getViewData(viewId, token, siteId) {
     try {
-      const response = await request.get(buildViewsDataUrl(viewId, siteId), this.buildHeader(token));
+      const response = await axios.get(this.buildViewsDataUrl(viewId, siteId), this.buildHeader(token));
       return response;
     } catch (error) {
       throw Error(error);

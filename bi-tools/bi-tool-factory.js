@@ -1,3 +1,5 @@
+const TableauTool = require("./types/tableau/tableau-tool");
+
 class BiToolFactory {
   constructor() {
     this.biToolTypes = {

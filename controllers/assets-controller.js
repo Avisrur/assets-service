@@ -5,8 +5,8 @@ const BiToolFactory = require("../bi-tools/bi-tool-factory");
 const { getAllAssets } = require("../repositories/assets-repository");
 const { getDB } = require("../utils/getter");
 
-router.get("/", getAllAssets);
-router.get("/catalog", catalog);
+router.get("/", getAll);
+router.post("/catalog", catalog);
 router.post("/search", search);
 
 module.exports = router;
@@ -14,14 +14,14 @@ module.exports = router;
 async function catalog(req, res, next) {
   const { biToolType, token, siteId } = req.body;
   try {
-    const catalog = await getBiTool(biToolType).importAssets(token, siteId);
+    const catalog = await getBiTool(biToolType).importAssets(getDB(req), token, siteId);
     res.json(catalog);
   } catch (error) {
     next(error);
   }
 }
 
-async function getAllAssets(req, res, next) {
+async function getAll(req, res, next) {
   try {
     const rows = await getAllAssets(getDB(req));
     res.json(rows);

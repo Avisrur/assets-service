@@ -1,26 +1,35 @@
 const TableauClient = require("./tableau-client");
 const AssetEntity = require("../../../repositories/entities/asset-entity");
-const {createAssets } = require("../../../repositories/assets-repository")
+const { createAssets } = require("../../../repositories/assets-repository");
 
 class TableauService {
   constructor() {
     this.tableauClient = new TableauClient();
   }
 
-  async handleCatalogedAssets(catalog,token,siteId) {
-    assetsList = []
+  async handleCatalogedAssets(db, catalog) {
+    let assetsList = [];
     for (const [workbookName, workbookValues] of Object.entries(catalog)) {
-      newHandledAssets = await handleWorkbookViews(workbookValues.views, workbookValues.workbookDetails,token,siteId);
+      let newHandledAssets = this.handleWorkbookViews(workbookValues.views, workbookValues.workbookDetails);
       assetsList = [...assetsList, ...newHandledAssets];
     }
-    await createAssets(assetsList);
+    await createAssets(db, assetsList);
   }
 
-  async handleWorkbookViews(views, workbookDeatails,token,siteId) {
-    return views.map(view => {
-      viewData = await this.tableauClient.getViewData(view.id, token, siteId);
-      return new AssetEntity.buildAssetEntity(view, workbookDeatails, viewData);
-    })
+  handleWorkbookViews(views, workbookDeatails) {
+    return views.map((view) => {
+      return new AssetEntity().buildAssetEntity(view, workbookDeatails);
+    });
+  }
+
+  async generateCatalogedAssets(workbooks, token, siteId) {
+    let catalog = {};
+    for (let workbook of workbooks) {
+      catalog[workbook.name] = {};
+      catalog[workbook.name]["views"] = await this.tableauClient.getAllViewsOfWorkbook(workbook.id, token, siteId);
+      catalog[workbook.name]["workbookDetails"] = workbook;
+    }
+    return catalog;
   }
 }
 
