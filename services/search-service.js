@@ -1,0 +1,3 @@
+class SearchService {
+  handleSearchingKeywords(searchingKeywords) {}
+}

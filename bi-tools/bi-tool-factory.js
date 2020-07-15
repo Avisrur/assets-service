@@ -1,13 +1,13 @@
-class ParserFactory {
+class BiToolFactory {
   constructor() {
-    this.parserTypes = {
-      tableau: new TableauClient(),
+    this.biToolTypes = {
+      tableau: new TableauTool(),
     };
   }
 
-  getParserByType(type) {
-    return this.parserTypes[type];
+  getBiToolByType(type) {
+    return this.biToolTypes[type];
   }
 }
 
-module.exports = ParserFactory;
+module.exports = BiToolFactory;
